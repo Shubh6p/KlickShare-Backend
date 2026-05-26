@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const allowedOrigins = process.env.CLIENT_URL 
   ? process.env.CLIENT_URL.split(',').map(url => url.trim()) 
-  : ['http://localhost:5500'];
+  : ['https://klickshare-theta.vercel.app', 'http://localhost:5173'];
 
 const config = {
   PORT: process.env.PORT || 3000,
