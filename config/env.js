@@ -14,16 +14,17 @@ const config = {
   ROOM_MAX_AGE_MINUTES: parseInt(process.env.ROOM_MAX_AGE_MINUTES, 10) || 30,
   
   // ICE / WebRTC Servers Configuration
-  ICE_SERVERS: [
+  ICE_SERVERS: process.env.TURN_URL ? [
     { urls: 'stun:stun.l.google.com:19302' },
+    { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' },
     {
-      urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80'
-    },
-    {
-      urls: process.env.TURN_URL || 'turn:openrelay.metered.ca:80',
-      username: process.env.TURN_USERNAME || 'openrelayproject',
-      credential: process.env.TURN_PASSWORD || 'openrelayproject'
+      urls: process.env.TURN_URL,
+      username: process.env.TURN_USERNAME,
+      credential: process.env.TURN_PASSWORD
     }
+  ] : [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' }
   ]
 };
 
