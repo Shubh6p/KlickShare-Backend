@@ -15,19 +15,35 @@ const config = {
   
   // ICE / WebRTC Servers Configuration
   ICE_SERVERS: (() => {
-    const stunServers = [
+    const defaultServers = [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun2.l.google.com:19302' },
       { urls: 'stun:stun3.l.google.com:19302' },
       { urls: 'stun:stun4.l.google.com:19302' },
       { urls: 'stun:stun.services.mozilla.com' },
-      { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' }
+      // Public free TURN servers as a fallback for strict networks
+      {
+        urls: 'turn:openrelay.metered.ca:80',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      }
     ];
 
     if (process.env.TURN_URL && process.env.TURN_USERNAME && process.env.TURN_PASSWORD) {
       return [
-        ...stunServers,
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun.services.mozilla.com' },
         {
           urls: process.env.TURN_URL,
           username: process.env.TURN_USERNAME,
@@ -36,7 +52,7 @@ const config = {
       ];
     }
     
-    return stunServers;
+    return defaultServers;
   })()
 };
 
