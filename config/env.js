@@ -14,18 +14,30 @@ const config = {
   ROOM_MAX_AGE_MINUTES: parseInt(process.env.ROOM_MAX_AGE_MINUTES, 10) || 30,
   
   // ICE / WebRTC Servers Configuration
-  ICE_SERVERS: process.env.TURN_URL ? [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' },
-    {
-      urls: process.env.TURN_URL,
-      username: process.env.TURN_USERNAME,
-      credential: process.env.TURN_PASSWORD
+  ICE_SERVERS: (() => {
+    const stunServers = [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun3.l.google.com:19302' },
+      { urls: 'stun:stun4.l.google.com:19302' },
+      { urls: 'stun:stun.services.mozilla.com' },
+      { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' }
+    ];
+
+    if (process.env.TURN_URL && process.env.TURN_USERNAME && process.env.TURN_PASSWORD) {
+      return [
+        ...stunServers,
+        {
+          urls: process.env.TURN_URL,
+          username: process.env.TURN_USERNAME,
+          credential: process.env.TURN_PASSWORD
+        }
+      ];
     }
-  ] : [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: process.env.STUN_URL || 'stun:stun.openrelay.metered.ca:80' }
-  ]
+    
+    return stunServers;
+  })()
 };
 
 module.exports = config;
